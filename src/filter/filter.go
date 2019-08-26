@@ -4,6 +4,7 @@ import (
 	"os"
 	"image"
 	_ "image/jpeg"
+	"image/color"
 	"errors"
 )
 
@@ -76,7 +77,24 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 }
 
 func (filter *Filter) ColorFilter(r, g, b uint8) error{
-	return ErrNotDefined
+	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
+	filter.Buffer = image.NewRGBA(rect)
+
+	for x:=0; x<filter.Size.X; x++{
+		for y:=0; y<filter.Size.Y; y++{
+			pixel :=filter.Img.At(x,y)
+			originalColor := color.RGBAModel.Convert(pixel).(color.RGBA)
+
+			newR := uint8(originalColor.R) * r
+			newG := uint8(originalColor.G) * g
+			newB := uint8(originalColor.B) * b
+
+			c := color.RGBA{R:newR, G:newG, B:newB, A:originalColor.A,}
+
+			filter.Buffer.Set(x,y,c)
+		}
+	}
+	return nil
 }
 
 func (filter *Filter) RedFilter() error{
