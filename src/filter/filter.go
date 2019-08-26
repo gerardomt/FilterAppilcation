@@ -1,6 +1,9 @@
 package filter
 
-import ("image"
+import (
+	"os"
+	"image"
+	_ "image/jpeg"
 	"errors"
 )
 
@@ -18,10 +21,42 @@ type Filter struct{
 }
 
 func NewFilter(imgPath string) (*Filter,error){
-	return nil, nil
+	filter := new(Filter)
+
+	f, err := os.Open(imgPath)
+	check(err)
+	defer f.Close()
+
+	img, format, err := image.Decode(f)
+	check(err)
+	if format != "jpeg" {
+		return nil, errors.New("Only jpeg images are supported")
+	}
+
+	filter.ImgPath = imgPath
+	filter.Img = img
+	filter.Size = img.Bounds().Size()
+	filter.Buffer = nil
+
+	return filter, nil
 }
 
 func (filter *Filter) SetImage(imgPath string) (error){
+	f, err := os.Open(imgPath)
+	check(err)
+	defer f.Close()
+
+	img, format, err := image.Decode(f)
+	check(err)
+	if format != "jpeg" {
+		return errors.New("Only jpeg images are supported")
+	}
+
+	filter.ImgPath = imgPath
+	filter.Img = img
+	filter.Size = img.Bounds().Size()
+	filter.Buffer = nil
+
 	return nil
 }
 
