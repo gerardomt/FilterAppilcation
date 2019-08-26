@@ -18,32 +18,38 @@ type Filter struct{
 }
 
 func NewFilter(imgPath string) (*Filter,error){
-	return nil, errors.New("")
+	return nil, nil
 }
 
 func (filter *Filter) SetImage(imgPath string) (error){
-	return errors.New("")
+	return nil
 }
 
 
 func (filter *Filter) SaveImage(suffix string) (string, error){
-	return "", errors.New("")
+	return "", nil
 }
 
-func (filter *Filter) GreyFilter(){
+func (filter *Filter) GreyFilter() error{
+	return errors.New("Not defined")
 }
 
-func (filter *Filter) PixelFilter(pixelSize int){
+func (filter *Filter) PixelFilter(pixelSize int) error{
+	return errors.New("Not defined")
 }
 
-func (filter *Filter) ColorFilter(r, g, b uint8){
+func (filter *Filter) ColorFilter(r, g, b uint8) error{
+	return errors.New("Not defined")
 }
 
-func (filter *Filter) RedFilter(){
+func (filter *Filter) RedFilter() error{
+	return errors.New("Not defined" )
 }
 
-func (filter *Filter) BlueFilter(){
+func (filter *Filter) BlueFilter() error{
+	return errors.New("Not defined" )
 }
 
-func (filter *Filter) GreenFilter(){
+func (filter *Filter) GreenFilter() error{
+	return errors.New("Not defined" )
 }

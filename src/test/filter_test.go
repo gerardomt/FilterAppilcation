@@ -14,7 +14,7 @@ var nPixelTest = 300
 func TestNewFilter(t *testing.T){
 	_, err := filter.NewFilter(noValidImage)
 	if err == nil {
-		t.Errorf("NewFilter did not return an error: %s", err)
+		t.Errorf("NewFilter did not return an error")
 	}
 }
 
@@ -22,7 +22,7 @@ func TestSetImage(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.SetImage(noValidImage)
 	if err == nil {
-		t.Errorf("SetImage did not return an error: %s", err)
+		t.Errorf("SetImage did not return an error")
 	}
 }
 
@@ -30,13 +30,17 @@ func TestSaveImage(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	_, err := ft.SaveImage("")
 	if err == nil {
-		t.Errorf("%s", err)
+		t.Errorf("SaveImage did not return an error")
 	}
 }
 
 func TestRedFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
-	ft.RedFilter()
+	err := ft.RedFilter()
+	if err != nil{
+		t.Errorf("%s", err)
+		return
+	}
 	var x, y int
 	var pixel color.RGBA
 	for i:=0; i<nPixelTest; i++{
@@ -53,7 +57,11 @@ func TestRedFilter(t *testing.T){
 
 func TestBlueFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
-	ft.BlueFilter()
+	err := ft.BlueFilter()
+	if err != nil{
+		t.Errorf("%s", err)
+		return
+	}
 	var x, y int
 	var pixel color.RGBA
 	for i:=0; i<nPixelTest; i++{
@@ -70,7 +78,11 @@ func TestBlueFilter(t *testing.T){
 
 func TestGreenFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
-	ft.GreenFilter()
+	err := ft.GreenFilter()
+	if err != nil{
+		t.Errorf("%s", err)
+		return
+	}
 	var x, y int
 	var pixel color.RGBA
 	for i:=0; i<nPixelTest; i++{
@@ -89,7 +101,12 @@ func TestPixelFilter(t *testing.T){
 	bigPxSize := 30
 	var testPixel, pixel color.RGBA
 	ft, _ := filter.NewFilter(validImage)
-	ft.PixelFilter(bigPxSize)
+	err := ft.PixelFilter(bigPxSize)
+		if err != nil{
+		t.Errorf("%s", err)
+		return
+	}
+
 	for x:=0; x<ft.Size.X-bigPxSize; x=x+bigPxSize {
 		for y:=0; y<ft.Size.Y-bigPxSize; y=y+bigPxSize {
 			testPixel = color.RGBAModel.Convert(
