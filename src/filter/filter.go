@@ -102,7 +102,7 @@ func (filter *Filter) RedFilter() error{
 }
 
 func (filter *Filter) BlueFilter() error{
-	return ErrNotDefined
+	return filter.ColorFilter(0, 0, 1)
 }
 
 func (filter *Filter) GreenFilter() error{
