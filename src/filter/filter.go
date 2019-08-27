@@ -100,7 +100,8 @@ func (filter *Filter) RedFilter() error{
 }
 
 func (filter *Filter) BlueFilter() error{
-	return errors.New("Not defined" )
+	filter.ColorFilter(0, 0, 1)
+	return nil
 }
 
 func (filter *Filter) GreenFilter() error{
