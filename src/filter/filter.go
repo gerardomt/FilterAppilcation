@@ -68,7 +68,7 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 	return "", nil
 }
 
-func (filter *Filter) GreyFilter(){
+func (filter *Filter) GreyFilter() error{
 	var r,g,b float64
 	var grey uint8
 	var originalColor, newColor color.RGBA
@@ -93,6 +93,7 @@ func (filter *Filter) GreyFilter(){
 			filter.Buffer.Set(x,y,newColor)
 		}
 	}
+	return int
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
