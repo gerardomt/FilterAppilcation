@@ -96,7 +96,8 @@ func (filter *Filter) ColorFilter(r, g, b uint8) error{
 }
 
 func (filter *Filter) RedFilter() error{
-	return errors.New("Not defined" )
+	filter.ColorFilter(1, 0, 0)
+	return nil
 }
 
 func (filter *Filter) BlueFilter() error{
