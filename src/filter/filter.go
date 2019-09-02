@@ -105,5 +105,6 @@ func (filter *Filter) BlueFilter() error{
 }
 
 func (filter *Filter) GreenFilter() error{
-	return errors.New("Not defined" )
+	filter.ColorFilter(0, 1, 0)
+	return nil
 }
