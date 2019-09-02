@@ -68,27 +68,31 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 	return "", nil
 }
 
-func (filter *Filter) GreyFilter() error{
+func (filter *Filter) GreyFilter(){
+	var r,g,b float64
+	var grey uint8
+	var originalColor, newColor color.RGBA
+	var pixel color.Color
+	
 	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
 	filter.Buffer = image.NewRGBA(rect)
 
-	for x:=0; x<filter.Size.X; x++{
-		for y:=0; y<filter.Size.Y; y++{
-			pixel :=filter.Img.At(x,y)
-			originalColor := color.RGBAModel.Convert(pixel).(color.RGBA)
+	for x:=0; x<filter.Size.X; x++ {
+		for y:=0; y<filter.Size.Y; y++ {
+			pixel = filter.Img.At(x,y)
+			originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
 
-			r := float64(originalColor.R) * 0.92126
-			g := float64(originalColor.G) * 0.97152
-			b := float64(originalColor.B) * 0.90722
+			r = float64(originalColor.R) * 0.92126
+			g = float64(originalColor.G) * 0.97152
+			b = float64(originalColor.B) * 0.90722
 
-			grey := uint8((r + g + b) / 3)
+			grey = uint8((r + g + b) / 3)
 
-			c := color.RGBA{R:grey, G:grey, B:grey, A:originalColor.A,}
+			newColor = color.RGBA{R:grey, G:grey, B:grey, A:originalColor.A,}
 
-			filter.Buffer.Set(x,y,c)
+			filter.Buffer.Set(x,y,newColor)
 		}
 	}
-	return nil
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
