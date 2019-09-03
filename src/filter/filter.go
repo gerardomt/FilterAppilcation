@@ -73,7 +73,7 @@ func (filter *Filter) GreyFilter() error{
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
-	if pixelSize<=0 && pixelSize>filter.Size.X && pixelSize>filter.Size.Y {
+	if pixelSize<=0 || pixelSize>filter.Size.X || pixelSize>filter.Size.Y {
 		return errors.New("pixelSize must be greater than zero and less than"+
 						  "the size of the image")
 	}
