@@ -93,7 +93,7 @@ func (filter *Filter) GreyFilter() error{
 			filter.Buffer.Set(x,y,newColor)
 		}
 	}
-	return int
+	return nil
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
