@@ -121,7 +121,44 @@ func (filter *Filter) GreyFilter() error{
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
-	return ErrNotDefined
+	if pixelSize<=0 || pixelSize>filter.Size.X || pixelSize>filter.Size.Y {
+		return errors.New("pixelSize must be greater than zero and less than"+
+						  "the size of the image")
+	}
+	var sumR, sumG, sumB, myA uint8
+	var pixel color.Color
+	var originalColor, newColor color.RGBA
+	
+	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
+	filter.Buffer = image.NewRGBA(rect)
+	var square uint8 = uint8(pixelSize*pixelSize)
+
+	for x:=0; x<filter.Size.X; x=x+pixelSize{
+		for y:=0; y<filter.Size.Y; y=y+pixelSize{
+			sumR = 0; sumG = 0; sumB = 0; myA = 0;
+
+			for a:=0; a<pixelSize && x+a>filter.Size.X ;a++ {
+				for b:=0; b<pixelSize && y+b>filter.Size.Y; b++ {
+					pixel = filter.Img.At(x+a,y+b)
+					originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
+					sumR += originalColor.R
+					sumG += originalColor.G
+					sumB += originalColor.B
+					if x==x+a && y==y+b {
+						myA = originalColor.A
+					}
+				}
+			}
+
+			newColor = color.RGBA{R:sumR/square, G:sumG/square,B:sumB/square, A:myA,}
+			for a:=0;a<pixelSize;a++{
+				for b:=0;b<pixelSize;b++{
+					filter.Buffer.Set(x+a, y+b, newColor)
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func (filter *Filter) ColorFilter(r, g, b uint8) error{
