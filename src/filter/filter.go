@@ -101,6 +101,8 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 }
 
 func (filter *Filter) ColorFilter(r, g, b uint8) error{
+	//Como r,g,b son uint8 no es necesario revisar que sean mayores a cero
+	
 	var newR, newG, newB uint8
 	var pixel color.Color
 	var originalColor, newColor color.RGBA
