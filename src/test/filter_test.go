@@ -34,7 +34,7 @@ func TestSaveImage(t *testing.T){
 	}
 }
 
-	func TestInvalidColorFilterParameter(t *testing.T){
+func TestInvalidColorFilterParameter(t *testing.T){
 	negative := uint8(rand.Int() * -1)
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.ColorFilter(negative, negative, negative)
@@ -208,5 +208,4 @@ func TestGreaterThanImagePixelSize(t *testing.T){
 				 "size parameter")
 		return
 	}
-}
-//funic 
+} 
