@@ -34,23 +34,6 @@ func TestSaveImage(t *testing.T){
 	}
 }
 
-func TestInvalidColorFilterParameter(t *testing.T){
-	negative := uint8(rand.Int() * -1)
-	ft, _ := filter.NewFilter(validImage)
-	err := ft.ColorFilter(negative, negative, negative)
-	
-	//if ColorFiler is no defined
-	if err == filter.ErrNotDefined{
-		t.Errorf("ColorFilter is not defined")
-		return
-	}
-	
-	if err == nil{
-		t.Errorf("ColorFilter do not return an error with negative parameter")
-		return
-	}
-}
-
 func TestRedFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.RedFilter()
