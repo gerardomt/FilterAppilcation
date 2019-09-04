@@ -3,7 +3,10 @@ package filter
 import (
 	"os"
 	"image"
-	_ "image/jpeg"
+	"image/jpeg"
+	"path/filepath"
+	"fmt"
+	"strings"
 	"errors"
 )
 
@@ -62,9 +65,30 @@ func (filter *Filter) SetImage(imgPath string) (error){
 	return nil
 }
 
+func (filter *Filter) SaveImageAt(path string) (string,error){
+	if filter.Buffer == nil{
+		return "", errors.New("No filter applied")
+	}
+	file, err := os.Create(path)
+	defer file.Close()
+	check(err)
+	err = jpeg.Encode(file, filter.Buffer, nil)
+	check(err)
+
+	return path, nil
+}
 
 func (filter *Filter) SaveImage(suffix string) (string, error){
-	return "", nil
+	ext := filepath.Ext(filter.ImgPath)
+	name := strings.TrimSuffix(filepath.Base(filter.ImgPath), ext)
+	newImagePath := fmt.Sprintf("%s/%s_%s%s", filepath.Dir(filter.ImgPath), name, suffix, ext)
+
+	_, err := filter.SaveImageAt(newImagePath)
+	if err != nil {
+		return newImagePath, err
+	}
+
+	return newImagePath, nil
 }
 
 func (filter *Filter) GreyFilter() error{
