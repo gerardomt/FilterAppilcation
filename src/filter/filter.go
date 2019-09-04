@@ -89,8 +89,8 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 		for y:=0; y<filter.Size.Y; y=y+pixelSize{
 			sumR = 0; sumG = 0; sumB = 0; myA = 0;
 
-			for a:=0; a<pixelSize && x+a>filter.Size.X ;a++ {
-				for b:=0; b<pixelSize && y+b>filter.Size.Y; b++ {
+			for a:=0; a<pixelSize && x+a<filter.Size.X ;a++ {
+				for b:=0; b<pixelSize && y+b<filter.Size.Y; b++ {
 					pixel = filter.Img.At(x+a,y+b)
 					originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
 					sumR += originalColor.R
