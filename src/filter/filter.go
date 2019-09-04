@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"fmt"
 	"strings"
+	"image/color"
 	"errors"
 )
 
@@ -92,7 +93,31 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 }
 
 func (filter *Filter) GreyFilter() error{
-	return ErrNotDefined
+	var r,g,b float64
+	var grey uint8
+	var originalColor, newColor color.RGBA
+	var pixel color.Color
+	
+	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
+	filter.Buffer = image.NewRGBA(rect)
+
+	for x:=0; x<filter.Size.X; x++ {
+		for y:=0; y<filter.Size.Y; y++ {
+			pixel = filter.Img.At(x,y)
+			originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
+
+			r = float64(originalColor.R) * 0.92126
+			g = float64(originalColor.G) * 0.97152
+			b = float64(originalColor.B) * 0.90722
+
+			grey = uint8((r + g + b) / 3)
+
+			newColor = color.RGBA{R:grey, G:grey, B:grey, A:originalColor.A,}
+
+			filter.Buffer.Set(x,y,newColor)
+		}
+	}
+	return nil
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
@@ -100,17 +125,40 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 }
 
 func (filter *Filter) ColorFilter(r, g, b uint8) error{
-	return ErrNotDefined
+	//Como r,g,b son uint8 no es necesario revisar que sean mayores a cero
+	
+	var newR, newG, newB uint8
+	var pixel color.Color
+	var originalColor, newColor color.RGBA
+	
+	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
+	filter.Buffer = image.NewRGBA(rect)
+
+	for x:=0; x<filter.Size.X; x++ {
+		for y:=0; y<filter.Size.Y; y++ {
+			pixel = filter.Img.At(x,y)
+			originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
+
+			newR = uint8(originalColor.R) * r
+			newG = uint8(originalColor.G) * g
+			newB = uint8(originalColor.B) * b
+
+			newColor = color.RGBA{R:newR, G:newG, B:newB, A:originalColor.A,}
+
+			filter.Buffer.Set(x,y,newColor)
+		}
+	}
+	return nil
 }
 
 func (filter *Filter) RedFilter() error{
-	return ErrNotDefined
+	return filter.ColorFilter(1, 0, 0)
 }
 
 func (filter *Filter) BlueFilter() error{
-	return ErrNotDefined
+	return filter.ColorFilter(0, 0, 1)
 }
 
 func (filter *Filter) GreenFilter() error{
-	return ErrNotDefined
+	return filter.ColorFilter(0, 1, 0)
 }
