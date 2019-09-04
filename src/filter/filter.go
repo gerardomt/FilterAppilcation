@@ -7,6 +7,8 @@ import (
 	"errors"
 )
 
+var ErrNotDefined error = errors.New("Not Defined")
+
 func check(err error){
 	if err != nil{
 		panic(err)
@@ -66,25 +68,25 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 }
 
 func (filter *Filter) GreyFilter() error{
-	return errors.New("Not defined")
+	return ErrNotDefined
 }
 
 func (filter *Filter) PixelFilter(pixelSize int) error{
-	return errors.New("Not defined")
+	return ErrNotDefined
 }
 
 func (filter *Filter) ColorFilter(r, g, b uint8) error{
-	return errors.New("Not defined")
+	return ErrNotDefined
 }
 
 func (filter *Filter) RedFilter() error{
-	return errors.New("Not defined" )
+	return ErrNotDefined
 }
 
 func (filter *Filter) BlueFilter() error{
-	return errors.New("Not defined" )
+	return ErrNotDefined
 }
 
 func (filter *Filter) GreenFilter() error{
-	return errors.New("Not defined" )
+	return ErrNotDefined
 }
