@@ -1,0 +1,179 @@
+\documentclass[11pt]{article}
+
+\input{structure.tex}
+
+\title{
+        \normalfont\normalsize
+        \textsc{Universidad Nacional Autonoma de México}\\
+        \vspace{20pt}
+        \rule{\linewidth}{0.5pt}\\
+        \vspace{20pt}
+        {\huge Tarea 02 - Proces digital de imágenes}\\
+        \vspace{12pt}
+        \rule{\linewidth}{2pt}\\
+        \vspace{12pt}
+}
+
+\author{\LARGE Gerardo Daniel Martínez Trujillo \\ 311314348}
+\date{\normalsize\today}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Descripción del problema}
+Se quiere programar una aplicación que aplique filtros a imágenes. La
+aplicación proveerá una interfaz gráfica desde la cual poder aplicar
+los filtros.\\
+El formato de las imágenes proveídas son de formato jpeg.\\
+
+Los filtros que se necesitan son: filtro rojo, filtro azul, filtro
+verde y filtro de mosaico.\\
+
+Para el filtro de mosaico se debe de poder escoger el largo de la
+región a la cual se le aplicará el filtro desde una ventana
+secundaria.\\
+
+\section{Análisis del problema}
+Para poder hacer los filtros necesitamos alguna manera de acceder al
+valorde los pixeles de la imagen. Para la mayoría de los lenguajes de
+programación existe alguna biblioteca con la capacidad de trabajar con
+pixeles. Por lo tanto la elección de este estará en función de la
+eficiencia y facilidad con la que realiza este trabajo.\\
+
+Por la definición del problema parece indicado utilizar orientación a
+objetos para modelar una clase filtro donde la imagen sea un atributo
+y los metodos realizen transformaciones sobre ésta. También, para
+evitar la perdida de información de la imagen de original la clase
+filtro devería tener alguna especie de caché donde guardar los datos
+iniciales.\\
+
+De nuevo, la mayoría de los lenguajes cuenta con una forma de trabajar
+con interfaz gráfica y este probleme se reduce a escoger aquel donde
+sea más fácil crearla.\\
+
+\section{Selección de la mejor alternativa}
+Para solucionar el problema usaremos el lenguaje de programación go,
+debido que se biblioteca standar proveé la posibilidad de trabajar con
+pixeles. En la mayoría de los lenguages que se revisaron se necesitaba
+alguna biblioteca adicional.\\
+
+Para la interfaz gráfica usaremos un binding de gtk para go que se
+llama go-gtk. Por desgracia esta biblioteca no está terminada y no
+está muy bien documentada, pero nos termite usar gtk de manera fácil.\\
+
+Go no tiene como tal una abstracción de clase o objeto. Pero es
+posible utilizar ciertos conceptos de orientación a objetos. Es
+posible asociar un tipo de dato (o un conjunto de datos) a una serie
+de funciones y hacer subtipos de estos. Por lo tanto, go ofrece
+características suficientes para los propósitos de este proyecto.\\
+
+\section{Pseudocódigo}
+\begin{algorithm}[H] % H = forzar está posición
+\caption{Filtro de color}
+\label{ML:Algorithm1}
+\SetAlgoLined
+\KwData{Matriz(M) de tamaño $n\times m$ con entradas de la forma (r,g,b), donde cada r,g,b es un entero entre 0 y 255}
+\KwData{flotantes x,y,z entre 0 y 1}
+\KwResult{Matriz de tamaño $n\times m$ con entradas de la forma (r,g,b), donde cada r,g,b es un enteros entre 0 y 255}
+\LinesNumbered
+\SetAlgoVlined
+\For{x=0 hasta n}{
+  \For {y=0 hasta m}{
+  $M_{xy}.r \leftarrow M_{xy}.r \cdot x$\;
+  $M_{xy}.g \leftarrow M_{xy}.g \cdot y$\;
+  $M_{xy}.b \leftarrow M_{xy}.b \cdot z$\;
+  }
+}
+Regresa M\;
+\end{algorithm}
+
+\vspace{20px}
+\textbf{Aclacaciones}
+\begin{itemize}
+\item datos de entrada x,y,z \\
+
+  Este es un algoritmo generalizado para hacer filtros de
+  colores. Para el filtro rojo x,y,z serían iguales a 1,0,0
+  respectivamente; para el verde, 0,1,0 y para el azul, 0,0,1 \\
+
+\end{itemize}
+
+\begin{algorithm}[H] % H = forzar está posición
+\caption{Filtro de mosaico}
+\label{ML:Algorithm1}
+\SetAlgoLined
+\KwData{Matriz(M) de tamaño $n\times m$ con entradas de la forma (r,g,b), donde cada r,g,b, es un enteros entre 0 y 255}
+\KwData{entero s donde, s.p.g. si $n\le m$, entonces $0\le s\le m$, además $s|n$ y $s|m$}
+\KwResult{Matriz de tamaño $n\times m$ con entradas de la forma (r,g,b) donde cada r,g,b es un entero entre 0 y 255 }
+\LinesNumbered
+\SetAlgoVlined
+var sumR,sumG, sumB\;
+\For{x=0 hasta n con saltos de s}{
+  \For {y=0 hasta m con saltos de s}{
+    sumR=0, sumG=0, sumB=0\;
+    \For {a=0 hasta s}{
+      \For {b=0 hasta s}{
+        $sumR \leftarrow sumR + M_{xy}.r$\;
+        $sumG \leftarrow sumG + M_{xy}.g$\;
+        $sumB \leftarrow sumB + M_{xy}.b$\;
+      }
+    }
+    \For {a=0 hasta s}{
+      \For {b=0 hasta s}{
+        $M_{xy}.r \leftarrow \lfloor sumR/s^2 \rfloor$\;
+        $M_{xy}.g \leftarrow \lfloor sumG/s^2 \rfloor$\;
+        $M_{xy}.b \leftarrow \lfloor sumB/s^2 \rfloor$\;
+      }
+    }
+  }
+}
+Regresa M\;
+\end{algorithm}
+
+\vspace{20px}
+\textbf{Aclacaciones}
+\begin{itemize}
+\item dato de entrada s \\
+
+  Por simplicidad para este algoritmo se pide que s divida a m y a
+  n. Si se quiere que un s cualquiera se debe considerar un caso
+  especial para lidiar con las regiones a la derecha y abajo de la
+  imagen. Éste se implementa en el proyecto. \\
+
+\end{itemize}
+
+\section{A futuro}
+Para el mantenimiento creo que lo más inmediato sería mejorar la
+interfaz gráfica porque considero que tiene varias limitaciones como
+tener que cargar una imagen por default para que funcione el programa
+y que las imágenes se muestre siempre del mismo tamaño.\\
+
+También sería posible añadir nuevos filtros, pero lo primero que agregaría sería una opción donde el usuario pueda escoger los parametros que se le pasan al filtro de color para hacer filtros de colores más variados.\\
+
+Como ya hay muchas aplicaciones gratuitas que hacen lo mismo que esta aplicación y más, no cobraría más de 500.
+
+\section{Documentación}
+
+\begin{itemize}
+\item Go \\ \\
+  \href{https://golang.org/pkg/image/}{Documentación de paquete image}\\
+  \href{https://spf13.com/post/is-go-object-oriented/}{Orientación a objetos con Go}\\
+  \href{https://golang.org/doc/}{Documentación de Go}\\
+  \href{https://golang.org/pkg/testing/}{Documentación de paquete testing}\\
+  \href{https://blog.alexellis.io/golang-writing-unit-tests/}{Tutorial para hacer pruebas unitarias en Go}\\
+
+\item GTK\\ \\
+  \href{https://mattn.github.io/go-gtk/}{Página de presentación de go-gtk}\\
+  \href{https://developer.gnome.org/gtk3/stable/}{Documentación de GTK3}\\
+  \href{https://github.com/mattn/go-gtk/}{Repositorio de go-gtk}. Se revisó el código para saber, primero si estaban implimentadas algunas opciones de GTK, y después para ver los datos de entrada y salida.\\
+
+\item Proceso Digital de Imágenes\\ \\
+  \href{https://usman.it/image-manipulation-in-golang/}{Tutorial para hacer un filtro gris en go}\\
+  \href{http://www.tannerhelland.com/3643/grayscale-image-algorithm-vb6/}{Distintos algoritmos para el filtro gris}.
+
+  \end{itemize}
+    
+
+\end{document}
