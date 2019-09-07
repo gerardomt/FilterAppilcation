@@ -77,32 +77,35 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 		return errors.New("pixelSize must be greater than zero and less than"+
 						  "the size of the image")
 	}
-	var sumR, sumG, sumB, myA uint8
+	var sumR, sumG, sumB uint
+	var myA uint8
 	var pixel color.Color
 	var originalColor, newColor color.RGBA
 	
 	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
 	filter.Buffer = image.NewRGBA(rect)
-	var square uint8 = uint8(pixelSize*pixelSize)
+	var square uint = uint(pixelSize*pixelSize)
+	var a,b int//uint para operarlo con las sumas
 
-	for x:=0; x<filter.Size.X; x=x+pixelSize{
-		for y:=0; y<filter.Size.Y; y=y+pixelSize{
+	for x:=0; x<filter.Size.X; x+=pixelSize{
+		for y:=0; y<filter.Size.Y; y+=pixelSize{
 			sumR = 0; sumG = 0; sumB = 0; myA = 0;
 
-			for a:=0; a<pixelSize && x+a<filter.Size.X ;a++ {
-				for b:=0; b<pixelSize && y+b<filter.Size.Y; b++ {
+			for a=0; a<pixelSize && x+a<filter.Size.X ;a++{
+				for b=0; b<pixelSize && y+b<filter.Size.Y; b++{
 					pixel = filter.Img.At(x+a,y+b)
 					originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
-					sumR += originalColor.R
-					sumG += originalColor.G
-					sumB += originalColor.B
-					if x==x+a && y==y+b {
-						myA = originalColor.A
-					}
+					sumR += uint(originalColor.R)
+					sumG += uint(originalColor.G)
+					sumB += uint(originalColor.B)
 				}
 			}
-
-			newColor = color.RGBA{R:sumR/square, G:sumG/square,B:sumB/square, A:myA,}
+			myA = originalColor.A
+			if a<pixelSize || b<pixelSize {
+				newColor = color.RGBA{R:uint8(sumR/uint(a*b)), G:uint8(sumG/uint(a*b)),B:uint8(sumB/uint(a*b)), A:myA,}
+			} else {
+				newColor = color.RGBA{R:uint8(sumR/square), G:uint8(sumG/square),B:uint8(sumB/square), A:myA,}
+			}
 			for a:=0;a<pixelSize;a++{
 				for b:=0;b<pixelSize;b++{
 					filter.Buffer.Set(x+a, y+b, newColor)
