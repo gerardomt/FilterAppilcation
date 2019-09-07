@@ -14,6 +14,15 @@ func LoadImage(filename string, image *gtk.Image){
     image.SetFromPixbuf(pixx)
 }
 
+func CreateDirectory(path string){
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err){
+			os.Mkdir(path, 0755)
+		}
+	}
+}
+
 func InitWindow() {
 	gtk.Init(nil)
 	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
@@ -39,6 +48,7 @@ func InitWindow() {
 	imageFilter, _ := filter.NewFilter(imagefile)
 	
 	vbox.Add(image)
+	CreateDirectory("../Cache")
 
 	//MENÚ
 	//Menú de archivos
@@ -114,12 +124,18 @@ func InitWindow() {
 	subfiltermenu := gtk.NewMenu()
 
 	filtermenu.SetSubmenu(subfiltermenu)
+	
+	originalItem := gtk.NewMenuItemWithMnemonic("_Original")
+	originalItem.Connect("activate", func(){
+		LoadImage(imageFilter.ImgPath, image)
+	})
+	subfiltermenu.Append(originalItem)
 
 	//Filtro Azul
 	blueFilterItem := gtk.NewMenuItemWithMnemonic("_Blue")
 	blueFilterItem.Connect("activate", func(){
 		imageFilter.BlueFilter()
-		path, _ := imageFilter.SaveImage("blue")
+		path, _ := imageFilter.SaveImageAt("../Cache/cache")
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(blueFilterItem)
@@ -128,7 +144,7 @@ func InitWindow() {
 	redFilterItem := gtk.NewMenuItemWithMnemonic("_Red")
 	redFilterItem.Connect("activate", func(){
 		imageFilter.RedFilter()
-		path, _ := imageFilter.SaveImage("red")
+		path, _ := imageFilter.SaveImageAt("../Cache/cache")
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(redFilterItem)
@@ -137,7 +153,7 @@ func InitWindow() {
 	greenFilterItem := gtk.NewMenuItemWithMnemonic("_Green")
 	greenFilterItem.Connect("activate", func(){
 		imageFilter.GreenFilter()
-		path, _ := imageFilter.SaveImage("green")
+		path, _ := imageFilter.SaveImageAt("../Cache/cache")
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(greenFilterItem)
@@ -146,7 +162,7 @@ func InitWindow() {
 	greyFilterItem := gtk.NewMenuItemWithMnemonic("_Grey")
 	greyFilterItem.Connect("activate", func(){		
 		imageFilter.GreyFilter()
-		path, _ := imageFilter.SaveImage("grey")
+		path, _ := imageFilter.SaveImageAt("../Cache/cache")
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(greyFilterItem)
@@ -162,14 +178,14 @@ func InitWindow() {
 		subbox :=gtk.NewVBox(false, 1)
 		label :=gtk.NewLabel("Select the size of the pixel")
 		subbox.Add(label)
-		scale := gtk.NewHScaleWithRange(10, 100, 5)
+		scale := gtk.NewHScaleWithRange(10, 100, 10)
 		subbox.Add(scale)
 		button := gtk.NewButtonWithLabel("Create")
 		button.Clicked(func(){
 			size = int(scale.GetValue())
 			subwindow.Destroy()
 			imageFilter.PixelFilter(size)
-			path, _ := imageFilter.SaveImage("pixel")
+			path, _ := imageFilter.SaveImageAt("../Cache/cache")
 			LoadImage(path, image)
 		})
 		subbox.Add(button)
