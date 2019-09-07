@@ -12,7 +12,6 @@ import (
 func LoadImage(filename string, image *gtk.Image){
 	pixx, _ := gdkpixbuf.NewPixbufFromFileAtScale(filename, 600, 600, true)
     image.SetFromPixbuf(pixx)
-<<<<<<< HEAD
 }
 
 func CreateDirectory(path string){
@@ -22,8 +21,6 @@ func CreateDirectory(path string){
 			os.Mkdir(path, 0755)
 		}
 	}
-=======
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 }
 
 func InitWindow() {
@@ -139,11 +136,7 @@ func InitWindow() {
 	blueFilterItem := gtk.NewMenuItemWithMnemonic("_Blue")
 	blueFilterItem.Connect("activate", func(){
 		imageFilter.BlueFilter()
-<<<<<<< HEAD
 		path, _ := imageFilter.SaveImageAt("../Cache/cache")
-=======
-		path, _ := imageFilter.SaveImage("blue")
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(blueFilterItem)
@@ -152,11 +145,7 @@ func InitWindow() {
 	redFilterItem := gtk.NewMenuItemWithMnemonic("_Red")
 	redFilterItem.Connect("activate", func(){
 		imageFilter.RedFilter()
-<<<<<<< HEAD
 		path, _ := imageFilter.SaveImageAt("../Cache/cache")
-=======
-		path, _ := imageFilter.SaveImage("red")
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(redFilterItem)
@@ -165,11 +154,7 @@ func InitWindow() {
 	greenFilterItem := gtk.NewMenuItemWithMnemonic("_Green")
 	greenFilterItem.Connect("activate", func(){
 		imageFilter.GreenFilter()
-<<<<<<< HEAD
 		path, _ := imageFilter.SaveImageAt("../Cache/cache")
-=======
-		path, _ := imageFilter.SaveImage("green")
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(greenFilterItem)
@@ -178,11 +163,7 @@ func InitWindow() {
 	greyFilterItem := gtk.NewMenuItemWithMnemonic("_Grey")
 	greyFilterItem.Connect("activate", func(){		
 		imageFilter.GreyFilter()
-<<<<<<< HEAD
 		path, _ := imageFilter.SaveImageAt("../Cache/cache")
-=======
-		path, _ := imageFilter.SaveImage("grey")
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 		LoadImage(path, image)
 	})
 	subfiltermenu.Append(greyFilterItem)
@@ -198,22 +179,14 @@ func InitWindow() {
 		subbox :=gtk.NewVBox(false, 1)
 		label :=gtk.NewLabel("Select the size of the pixel")
 		subbox.Add(label)
-<<<<<<< HEAD
 		scale := gtk.NewHScaleWithRange(10, 100, 10)
-=======
-		scale := gtk.NewHScaleWithRange(10, 100, 5)
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 		subbox.Add(scale)
 		button := gtk.NewButtonWithLabel("Create")
 		button.Clicked(func(){
 			size = int(scale.GetValue())
 			subwindow.Destroy()
 			imageFilter.PixelFilter(size)
-<<<<<<< HEAD
 			path, _ := imageFilter.SaveImageAt("../Cache/cache")
-=======
-			path, _ := imageFilter.SaveImage("pixel")
->>>>>>> a82bd8c5f43d3d030daa8f00d9c366b391ca3334
 			LoadImage(path, image)
 		})
 		subbox.Add(button)
