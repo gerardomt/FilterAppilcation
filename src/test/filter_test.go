@@ -11,6 +11,8 @@ var validImage = "media/fotitus.jpg"
 var noValidImage = "media/testpng.png"
 var nPixelTest = 500
 
+// Prueba que se devuelva un error si el constructor recibe una imagen que no
+// sea jpeg
 func TestNewFilter(t *testing.T){
 	_, err := filter.NewFilter(noValidImage)
 	if err == nil {
@@ -18,6 +20,7 @@ func TestNewFilter(t *testing.T){
 	}
 }
 
+// Prueba que se devuelva un error si SetImage recibe una image que no sea jpeg
 func TestSetImage(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.SetImage(noValidImage)
@@ -26,6 +29,8 @@ func TestSetImage(t *testing.T){
 	}
 }
 
+// Prueba que SaveImage devuelva un error si no se ha aplicado un filtro antes
+// de llamarla
 func TestSaveImage(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	_, err := ft.SaveImage("")
@@ -34,6 +39,8 @@ func TestSaveImage(t *testing.T){
 	}
 }
 
+// Prueba que ColorFilter devueva un error si se le pasa algún parámetro menor
+// que cero
 func TestColorFilterParameterLessThanZero(t *testing.T){
 	test := [3]float32{-1, 1, 0}
 	rand.Shuffle(len(test), func(i,j int){
@@ -46,6 +53,8 @@ func TestColorFilterParameterLessThanZero(t *testing.T){
 	}
 }
 
+// Prueba que ColorFilter devuelva un error si se le pasa algún parámetro mayor
+// que uno
 func TestColorFilterParameterGreaterThanOne(t *testing.T){
 	test := [3]float32{2.0, 1.0, 0.0}
 	rand.Shuffle(len(test), func(i,j int){
@@ -58,6 +67,8 @@ func TestColorFilterParameterGreaterThanOne(t *testing.T){
 	}
 }
 
+// Prueba que después de aplicar RedFilter y tomando pixeles al azar todos estos
+// tengas valores b,g iguales a cero 
 func TestRedFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.RedFilter()
@@ -79,6 +90,8 @@ func TestRedFilter(t *testing.T){
 	}
 }
 
+// Prueba que después de aplicar BlueFilter y tomando pixeles al azar todos estos
+// tengas valores r,g iguales a cero 
 func TestBlueFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.BlueFilter()
@@ -100,6 +113,8 @@ func TestBlueFilter(t *testing.T){
 	}	
 }
 
+// Prueba que después de aplicar GreenFilter y tomando pixeles al azar todos estos
+// tengas valores r,b iguales a cero 
 func TestGreenFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.GreenFilter()
@@ -121,6 +136,8 @@ func TestGreenFilter(t *testing.T){
 	}	
 }
 
+// Prueba que después de aplicar GreyFilter y tomando pixeles al azar todos estos
+// sean el resultado de aplicar la fórmula LUMA a los valores en la imagen original 
 func TestGreyFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.GreyFilter()
@@ -135,9 +152,9 @@ func TestGreyFilter(t *testing.T){
 		y = rand.Intn(ft.Size.Y)
 		originalPixel = color.RGBAModel.Convert(ft.Img.At(x,y)).(color.RGBA)
 		pixel = color.RGBAModel.Convert(ft.Buffer.At(x,y)).(color.RGBA)
-		r := float64(originalPixel.R) * 0.92126
-		g := float64(originalPixel.G) * 0.97152
-		b := float64(originalPixel.B) * 0.90722
+		r := float32(originalPixel.R) * 0.92126
+		g := float32(originalPixel.G) * 0.97152
+		b := float32(originalPixel.B) * 0.90722
 
 		grey := uint8((r + g + b) / 3)
 
@@ -148,6 +165,8 @@ func TestGreyFilter(t *testing.T){
 	}
 }
 
+// Prueba que después de aplicar PixelFilter todos los pixeles en regiones de
+// 30x30(arbitrario) tengan los mismos valores de pixeles
 func TestPixelFilter(t *testing.T){
 	bigPxSize := 30
 	var testPixel, pixel color.RGBA
@@ -176,6 +195,8 @@ func TestPixelFilter(t *testing.T){
 	}
 }
 
+// Prueba que PixelFilter devuelva un error si le pasa un parámetro menor que
+// cero
 func TestNegativePixelSize(t *testing.T){
 	negative := rand.Int() * -1
 	ft, _ := filter.NewFilter(validImage)
@@ -192,6 +213,8 @@ func TestNegativePixelSize(t *testing.T){
 	}
 }
 
+// Prueba que PixelFilter devuelva un error si se le pasa un parámetro mayor al
+// tamaño de la imagen
 func TestGreaterThanImagePixelSize(t *testing.T){
 	plus := rand.Int()
 	ft, _ := filter.NewFilter(validImage)

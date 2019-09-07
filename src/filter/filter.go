@@ -11,8 +11,11 @@ import (
 	"errors"
 )
 
+//Error returned to indicate that a function is not defined
 var ErrNotDefined error = errors.New("Not Defined")
 
+//Functions for deal with errors
+// if err != nil, then panic
 func check(err error){
 	if err != nil{
 		panic(err)
@@ -26,6 +29,10 @@ type Filter struct{
 	Buffer *image.RGBA
 }
 
+// Constructor of Filter object.
+// Receives the path of the original image. Only jpeg images are supported.
+// Return a pointer to a filter object and an error if imgPath indicates a not
+// jpeg image. If the image does not exists calls panic
 func NewFilter(imgPath string) (*Filter,error){
 	filter := new(Filter)
 
@@ -47,6 +54,10 @@ func NewFilter(imgPath string) (*Filter,error){
 	return filter, nil
 }
 
+// Replace the current image with the provided image
+// Recieves the path of the new image
+// Return an error if imgPath indicates a not jpeg image. If the image does not
+// exists calls panic
 func (filter *Filter) SetImage(imgPath string) (error){
 	f, err := os.Open(imgPath)
 	check(err)
@@ -66,6 +77,10 @@ func (filter *Filter) SetImage(imgPath string) (error){
 	return nil
 }
 
+// Saves the current buffer (the result of apply the filters) at the indicated
+// path
+// Return the same path and an error if no filter has been applied. If the path
+// does not exists calls panic
 func (filter *Filter) SaveImageAt(path string) (string,error){
 	if filter.Buffer == nil{
 		return "", errors.New("No filter applied")
@@ -79,6 +94,9 @@ func (filter *Filter) SaveImageAt(path string) (string,error){
 	return path, nil
 }
 
+// Saves the current buffer (the result of apply the filters) in the same
+// directory of the original image with suffix added at the end of the filename
+// Return the new path and an error if no filter has been applied. 
 func (filter *Filter) SaveImage(suffix string) (string, error){
 	ext := filepath.Ext(filter.ImgPath)
 	name := strings.TrimSuffix(filepath.Base(filter.ImgPath), ext)
@@ -92,6 +110,7 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 	return newImagePath, nil
 }
 
+// Applies a grey filter to the image and saves it in the buffer
 func (filter *Filter) GreyFilter() error{
 	var r,g,b float32
 	var grey uint8
@@ -120,6 +139,11 @@ func (filter *Filter) GreyFilter() error{
 	return nil
 }
 
+// Applies a pixelization filter to the image
+// Receives the size of the "big pixel" (the number of pixels at the side of the
+// region that the filter are going to be applied)
+// Return an error if 0<=pixelSize<X or Y where X is the length of the image and
+// Y is the width
 func (filter *Filter) PixelFilter(pixelSize int) error{
 	if pixelSize<=0 || pixelSize>filter.Size.X || pixelSize>filter.Size.Y {
 		return errors.New("pixelSize must be greater than zero and less than"+
@@ -132,8 +156,8 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 	
 	rect := image.Rect(0, 0, filter.Size.X, filter.Size.Y)
 	filter.Buffer = image.NewRGBA(rect)
-	var square uint = uint(pixelSize*pixelSize)
-	var a,b int//uint para operarlo con las sumas
+	var square uint = uint(pixelSize*pixelSize) //uint to operate with the sum
+	var a,b int
 
 	for x:=0; x<filter.Size.X; x+=pixelSize{
 		for y:=0; y<filter.Size.Y; y+=pixelSize{
@@ -149,10 +173,14 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 				}
 			}
 			myA = originalColor.A
-			if a<pixelSize || b<pixelSize {
-				newColor = color.RGBA{R:uint8(sumR/uint(a*b)), G:uint8(sumG/uint(a*b)),B:uint8(sumB/uint(a*b)), A:myA,}
+			if a<pixelSize || b<pixelSize { // to deal with the corners
+				newColor = color.RGBA{R:uint8(sumR/uint(a*b)),
+									  G:uint8(sumG/uint(a*b)),
+									  B:uint8(sumB/uint(a*b)), A:myA,}
 			} else {
-				newColor = color.RGBA{R:uint8(sumR/square), G:uint8(sumG/square),B:uint8(sumB/square), A:myA,}
+				newColor = color.RGBA{R:uint8(sumR/square),
+					                  G:uint8(sumG/square),
+									  B:uint8(sumB/square), A:myA,}
 			}
 			for a:=0;a<pixelSize;a++{
 				for b:=0;b<pixelSize;b++{
@@ -164,6 +192,9 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 	return nil
 }
 
+// Multiplies the r,g,b values of all the pixels of the image with the indicated
+// r,g,b values respectively
+// Returns an error if 0<r<1 or 0<b<1 or 0<g<1
 func (filter *Filter) ColorFilter(r, g, b float32) error{
 	if r<0 || r>1 || g<0 || g>1 || b<0 || b>1 {
 		return errors.New("r,g,b must be greater than zero and less than 1")
@@ -193,14 +224,17 @@ func (filter *Filter) ColorFilter(r, g, b float32) error{
 	return nil
 }
 
+// Applies a red filter to the image
 func (filter *Filter) RedFilter() error{
 	return filter.ColorFilter(1, 0, 0)
 }
 
+// Applies a blue filter to the image
 func (filter *Filter) BlueFilter() error{
 	return filter.ColorFilter(0, 0, 1)
 }
 
+// Appiles a green filter to the image
 func (filter *Filter) GreenFilter() error{
 	return filter.ColorFilter(0, 1, 0)
 }

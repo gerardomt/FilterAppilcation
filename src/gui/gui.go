@@ -9,11 +9,13 @@ import (
 	"github.com/mattn/go-gtk/gdkpixbuf"
 )
 
+// Set the image indicadet by filename in image 
 func LoadImage(filename string, image *gtk.Image){
-	pixx, _ := gdkpixbuf.NewPixbufFromFileAtScale(filename, 600, 600, true)
+	pixx, _ := gdkpixbuf.NewPixbufFromFileAtScale(filename, 900, 700, true)
     image.SetFromPixbuf(pixx)
 }
 
+// Create a single directory if it does not exists
 func CreateDirectory(path string){
 	_, err := os.Stat(path)
 	if err != nil {
@@ -23,6 +25,7 @@ func CreateDirectory(path string){
 	}
 }
 
+// Create the main window
 func InitWindow() {
 	gtk.Init(nil)
 	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
@@ -40,12 +43,12 @@ func InitWindow() {
 
 	//Carga una imagen por default
 	dir, _ := path.Split(os.Args[0])
-	imagefile := path.Join(dir, "../media/fotitus.jpg")
+	imagefile := path.Join(dir, "../media/img1.jpg")
 		
-	pixx, _ := gdkpixbuf.NewPixbufFromFileAtScale(imagefile, 600, 600, true)
-	image := gtk.NewImageFromPixbuf(pixx)
-
 	imageFilter, _ := filter.NewFilter(imagefile)
+	
+	pixx, _ := gdkpixbuf.NewPixbufFromFileAtScale(imagefile, 900, 700, true)
+	image := gtk.NewImageFromPixbuf(pixx)
 	
 	vbox.Add(image)
 
@@ -177,7 +180,7 @@ func InitWindow() {
 		subwindow.SetTitle("Big Pixel Size")
 
 		subbox :=gtk.NewVBox(false, 1)
-		label :=gtk.NewLabel("Select the size of the pixel")
+		label :=gtk.NewLabel("Select the size of the pixelization region")
 		subbox.Add(label)
 		scale := gtk.NewHScaleWithRange(10, 100, 10)
 		subbox.Add(scale)
@@ -197,7 +200,7 @@ func InitWindow() {
 	subfiltermenu.Append(pixelItem)
 
 	window.Add(vbox)
-	window.SetSizeRequest(600, 600)
+	window.SetSizeRequest(900, 700)
 	window.ShowAll()
 	gtk.Main()
 }
