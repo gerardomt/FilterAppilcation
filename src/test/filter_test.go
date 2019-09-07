@@ -34,6 +34,30 @@ func TestSaveImage(t *testing.T){
 	}
 }
 
+func TestColorFilterParameterLessThanZero(t *testing.T){
+	test := [3]float32{-1, 1, 0}
+	rand.Shuffle(len(test), func(i,j int){
+		test[i], test[j] = test[j], test[i]
+	})
+	ft, _ := filter.NewFilter(validImage)
+	err := ft.ColorFilter(test[0], test[1], test[2])
+	if err == nil {
+		t.Errorf("ColorFilter dn not return an error with parameter less than zero")
+	}
+}
+
+func TestColorFilterParameterGreaterThanOne(t *testing.T){
+	test := [3]float32{2.0, 1.0, 0.0}
+	rand.Shuffle(len(test), func(i,j int){
+		test[i], test[j] = test[j], test[i]
+	})
+	ft, _ := filter.NewFilter(validImage)
+	err := ft.ColorFilter(test[0], test[1], test[2])
+	if err == nil {
+		t.Errorf("ColorFilter do not return an error with parameter greater than 1")
+	}
+}
+
 func TestRedFilter(t *testing.T){
 	ft, _ := filter.NewFilter(validImage)
 	err := ft.RedFilter()
