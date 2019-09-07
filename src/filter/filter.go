@@ -93,7 +93,7 @@ func (filter *Filter) SaveImage(suffix string) (string, error){
 }
 
 func (filter *Filter) GreyFilter() error{
-	var r,g,b float64
+	var r,g,b float32
 	var grey uint8
 	var originalColor, newColor color.RGBA
 	var pixel color.Color
@@ -106,9 +106,9 @@ func (filter *Filter) GreyFilter() error{
 			pixel = filter.Img.At(x,y)
 			originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
 
-			r = float64(originalColor.R) * 0.92126
-			g = float64(originalColor.G) * 0.97152
-			b = float64(originalColor.B) * 0.90722
+			r = float32(originalColor.R) * 0.92126
+			g = float32(originalColor.G) * 0.97152
+			b = float32(originalColor.B) * 0.90722
 
 			grey = uint8((r + g + b) / 3)
 
@@ -164,8 +164,10 @@ func (filter *Filter) PixelFilter(pixelSize int) error{
 	return nil
 }
 
-func (filter *Filter) ColorFilter(r, g, b uint8) error{
-	//Como r,g,b son uint8 no es necesario revisar que sean mayores a cero
+func (filter *Filter) ColorFilter(r, g, b float32) error{
+	if r<0 || r>1 || g<0 || g>1 || b<0 || b>1 {
+		return errors.New("r,g,b must be greater than zero and less than 1")
+	}
 	
 	var newR, newG, newB uint8
 	var pixel color.Color
@@ -179,9 +181,9 @@ func (filter *Filter) ColorFilter(r, g, b uint8) error{
 			pixel = filter.Img.At(x,y)
 			originalColor = color.RGBAModel.Convert(pixel).(color.RGBA)
 
-			newR = uint8(originalColor.R) * r
-			newG = uint8(originalColor.G) * g
-			newB = uint8(originalColor.B) * b
+			newR = uint8(float32(originalColor.R) * r)
+			newG = uint8(float32(originalColor.G) * g)
+			newB = uint8(float32(originalColor.B) * b)
 
 			newColor = color.RGBA{R:newR, G:newG, B:newB, A:originalColor.A,}
 
