@@ -43,7 +43,7 @@ func InitWindow() {
 
 	//Carga una imagen por default
 	dir, _ := path.Split(os.Args[0])
-	imagefile := path.Join(dir, "../media/img1.jpg")
+	imagefile := path.Join(dir, "media/img1.jpg")
 		
 	imageFilter, _ := filter.NewFilter(imagefile)
 	
